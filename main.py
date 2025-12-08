@@ -5,7 +5,7 @@ import os
 import sys
 
 # Add project root to path for imports
-sys.path.append(os.path.dirname(os.path.abspath(_file_)))
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from ui.ventana_libros import LibrosWindow
 from ui.ventana_usuarios import UsuariosWindow
