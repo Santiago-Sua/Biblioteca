@@ -26,9 +26,9 @@ class BibliotecaApp(tb.Window):
         archivo_handler (ArchivoHandler): Utility for handling JSON/CSV files
     """
     
-    def _init_(self):
+    def __init__(self):
         """Initialize the main application window and components."""
-        super()._init_(themename="superhero")
+        super().__init__(themename="superhero")
         self.title("Library Management System")
         self.geometry("1200x700")
         self.resizable(True, True)
@@ -241,5 +241,5 @@ def main():
         raise
 
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     main()

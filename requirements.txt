@@ -1,0 +1,24 @@
+# Library Management System - Dependencies
+# Python 3.8+
+
+# GUI Framework
+ttkbootstrap==1.10.1
+
+# Note: tkinter comes pre-installed with Python
+# If tkinter is not available, install it with:
+# - Ubuntu/Debian: sudo apt-get install python3-tk
+# - Fedora: sudo dnf install python3-tkinter
+# - macOS: comes with Python installation
+# - Windows: comes with Python installation
+
+# Data Visualization (optional, for future enhancements)
+matplotlib>=3.5.0
+
+# Network visualization (optional, for future enhancements)
+networkx>=2.6.0
+
+# Installation instructions:
+# pip install -r requirements.txt
+#
+# Or for development:
+# pip install -r requirements.txt --upgrade
