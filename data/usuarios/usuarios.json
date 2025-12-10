@@ -1,13 +1,1 @@
-[
-  {
-    "id_usuario": "0001",
-    "nombre": "Santiago Suarez",
-    "email": "santiago@gmail.com",
-    "telefono": "302342421",
-    "direccion": "calle 59-b",
-    "fecha_registro": "2025-12-10",
-    "activo": true,
-    "libros_prestados": 0,
-    "max_prestamos": 3
-  }
-]
+[]

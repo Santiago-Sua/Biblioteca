@@ -733,4 +733,19 @@ class LibrosWindow:
         )
 
         if not ruta:
-            return  #
+            return  # user cancelled
+
+        try:
+            # cargar_desde_csv returns number of books loaded
+            count = self.gestor_inventario.cargar_desde_csv(ruta)
+
+            messagebox.showinfo(
+                "CSV Loaded",
+                f"{count} books loaded successfully from:\n{ruta}"
+            )
+
+            # refresh list
+            self.cargar_libros()
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Could not load CSV:\n{e}")
