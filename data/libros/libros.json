@@ -44,17 +44,6 @@
     "anio_publicacion": 1960
   },
   {
-    "isbn": "978-0-452-28423-4",
-    "titulo": "1984",
-    "autor": "George Orwell",
-    "peso": 1.1,
-    "valor": 42000.0,
-    "stock": 8,
-    "genero": "Ciencia Ficción",
-    "editorial": "Signet Classics",
-    "anio_publicacion": 1949
-  },
-  {
     "isbn": "978-0-7432-7356-5",
     "titulo": "El Código Da Vinci",
     "autor": "Dan Brown",
@@ -328,5 +317,16 @@
     "genero": "Clásico",
     "editorial": "Charles Scribner's Sons",
     "anio_publicacion": 1925
+  },
+  {
+    "isbn": "978-0-452-28423-4",
+    "titulo": "1984",
+    "autor": "George Orwell",
+    "peso": 1.1,
+    "valor": 42000.0,
+    "stock": 0,
+    "genero": "Ciencia Ficción",
+    "editorial": "Signet Classics",
+    "anio_publicacion": 1949
   }
 ]
