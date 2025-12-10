@@ -37,6 +37,8 @@ class UsuariosWindow:
         parent: Parent container widget
         archivo_handler: File operations handler
         gestor_usuarios: Users manager instance
+        modo_edicion: Flag to track if we're editing an existing user
+        id_original: Original ID when editing (to identify the user)
     """
     
     def __init__(self, parent, archivo_handler):
@@ -52,6 +54,10 @@ class UsuariosWindow:
         
         # Initialize users manager
         self.gestor_usuarios = GestorUsuarios(archivo_handler)
+        
+        # Edit mode tracking
+        self.modo_edicion = False
+        self.id_original = None
         
         # Create main container
         self.main_frame = tk.Frame(parent, bg="white")
@@ -218,60 +224,71 @@ class UsuariosWindow:
         form_frame = tk.Frame(self.tab_formulario, bg="white")
         form_frame.pack(pady=20, padx=50, fill="both", expand=True)
         
+        # Mode indicator label
+        self.mode_label = tk.Label(
+            form_frame,
+            text="REGISTER NEW USER",
+            bg="white",
+            font=("Helvetica", 12, "bold"),
+            fg="#006400"
+        )
+        self.mode_label.grid(row=0, column=0, columnspan=3, pady=(0, 15))
+        
         # User ID
         tk.Label(form_frame, text="User ID:", bg="white", font=("Helvetica", 10, "bold")).grid(
-            row=0, column=0, sticky="w", pady=5
+            row=1, column=0, sticky="w", pady=5
         )
         self.id_usuario_var = tk.StringVar()
-        id_entry = tk.Entry(form_frame, textvariable=self.id_usuario_var, font=("Helvetica", 10), width=30)
-        id_entry.grid(row=0, column=1, pady=5, padx=10, sticky="w")
+        self.id_entry = tk.Entry(form_frame, textvariable=self.id_usuario_var, font=("Helvetica", 10), width=30)
+        self.id_entry.grid(row=1, column=1, pady=5, padx=10, sticky="w")
         
-        tb.Button(
+        self.generate_id_button = tb.Button(
             form_frame,
             text="🔢 Generate ID",
             bootstyle="secondary-outline",
             command=self.generar_id_usuario
-        ).grid(row=0, column=2, padx=5)
+        )
+        self.generate_id_button.grid(row=1, column=2, padx=5)
         
         # Name
         tk.Label(form_frame, text="Full Name *:", bg="white", font=("Helvetica", 10, "bold")).grid(
-            row=1, column=0, sticky="w", pady=5
+            row=2, column=0, sticky="w", pady=5
         )
         self.nombre_var = tk.StringVar()
         tk.Entry(form_frame, textvariable=self.nombre_var, font=("Helvetica", 10), width=30).grid(
-            row=1, column=1, pady=5, padx=10, sticky="w"
+            row=2, column=1, pady=5, padx=10, sticky="w"
         )
         
         # Email
         tk.Label(form_frame, text="Email *:", bg="white", font=("Helvetica", 10, "bold")).grid(
-            row=2, column=0, sticky="w", pady=5
+            row=3, column=0, sticky="w", pady=5
         )
         self.email_var = tk.StringVar()
         tk.Entry(form_frame, textvariable=self.email_var, font=("Helvetica", 10), width=30).grid(
-            row=2, column=1, pady=5, padx=10, sticky="w"
+            row=3, column=1, pady=5, padx=10, sticky="w"
         )
         
         # Phone
         tk.Label(form_frame, text="Phone:", bg="white", font=("Helvetica", 10, "bold")).grid(
-            row=3, column=0, sticky="w", pady=5
+            row=4, column=0, sticky="w", pady=5
         )
         self.telefono_var = tk.StringVar()
         tk.Entry(form_frame, textvariable=self.telefono_var, font=("Helvetica", 10), width=30).grid(
-            row=3, column=1, pady=5, padx=10, sticky="w"
+            row=4, column=1, pady=5, padx=10, sticky="w"
         )
         
         # Address
         tk.Label(form_frame, text="Address:", bg="white", font=("Helvetica", 10, "bold")).grid(
-            row=4, column=0, sticky="w", pady=5
+            row=5, column=0, sticky="w", pady=5
         )
         self.direccion_var = tk.StringVar()
         tk.Entry(form_frame, textvariable=self.direccion_var, font=("Helvetica", 10), width=30).grid(
-            row=4, column=1, pady=5, padx=10, sticky="w"
+            row=5, column=1, pady=5, padx=10, sticky="w"
         )
         
         # Max Loans
         tk.Label(form_frame, text="Max Loans:", bg="white", font=("Helvetica", 10, "bold")).grid(
-            row=5, column=0, sticky="w", pady=5
+            row=6, column=0, sticky="w", pady=5
         )
         self.max_prestamos_var = tk.StringVar(value="3")
         tk.Spinbox(
@@ -281,18 +298,19 @@ class UsuariosWindow:
             textvariable=self.max_prestamos_var,
             font=("Helvetica", 10),
             width=28
-        ).grid(row=5, column=1, pady=5, padx=10, sticky="w")
+        ).grid(row=6, column=1, pady=5, padx=10, sticky="w")
         
         # Buttons
         btn_frame = tk.Frame(form_frame, bg="white")
-        btn_frame.grid(row=6, column=0, columnspan=3, pady=20)
+        btn_frame.grid(row=7, column=0, columnspan=3, pady=20)
         
-        tb.Button(
+        self.save_button = tb.Button(
             btn_frame,
             text="💾 Register User",
             bootstyle="success",
             command=self.registrar_usuario
-        ).pack(side="left", padx=10)
+        )
+        self.save_button.pack(side="left", padx=10)
         
         tb.Button(
             btn_frame,
@@ -308,7 +326,7 @@ class UsuariosWindow:
             bg="white",
             font=("Helvetica", 9, "italic"),
             fg="gray"
-        ).grid(row=7, column=0, columnspan=3, pady=5)
+        ).grid(row=8, column=0, columnspan=3, pady=5)
     
     def crear_tab_estadisticas(self):
         """Create the statistics tab."""
@@ -388,7 +406,7 @@ class UsuariosWindow:
         messagebox.showinfo("ID Generated", f"New User ID: {nuevo_id}")
     
     def registrar_usuario(self):
-        """Register a new user."""
+        """Register a new user or update existing one."""
         # Get values
         id_usuario = self.id_usuario_var.get().strip()
         nombre = self.nombre_var.get().strip()
@@ -419,34 +437,61 @@ class UsuariosWindow:
         try:
             max_prestamos = int(max_prestamos_str) if max_prestamos_str else 3
             
-            # Register user
-            resultado = self.gestor_usuarios.registrar_usuario(
-                id_usuario=id_usuario,
-                nombre=nombre,
-                email=email,
-                telefono=telefono,
-                direccion=direccion,
-                max_prestamos=max_prestamos
-            )
-            
-            if resultado['exito']:
-                messagebox.showinfo("Success", resultado['mensaje'])
-                self.limpiar_formulario()
-                self.cargar_usuarios()
+            if self.modo_edicion:
+                # UPDATE mode
+                resultado = self.gestor_usuarios.actualizar_usuario(
+                    id_original=self.id_original,
+                    id_usuario=id_usuario,
+                    nombre=nombre,
+                    email=email,
+                    telefono=telefono,
+                    direccion=direccion,
+                    max_prestamos=max_prestamos
+                )
+                
+                if resultado['exito']:
+                    messagebox.showinfo("Success", resultado['mensaje'])
+                    self.limpiar_formulario()
+                    self.cargar_usuarios()
+                else:
+                    messagebox.showerror("Error", resultado['mensaje'])
             else:
-                messagebox.showerror("Error", resultado['mensaje'])
+                # REGISTER mode
+                resultado = self.gestor_usuarios.registrar_usuario(
+                    id_usuario=id_usuario,
+                    nombre=nombre,
+                    email=email,
+                    telefono=telefono,
+                    direccion=direccion,
+                    max_prestamos=max_prestamos
+                )
+                
+                if resultado['exito']:
+                    messagebox.showinfo("Success", resultado['mensaje'])
+                    self.limpiar_formulario()
+                    self.cargar_usuarios()
+                else:
+                    messagebox.showerror("Error", resultado['mensaje'])
                 
         except Exception as e:
-            messagebox.showerror("Error", f"Error registering user: {str(e)}")
+            messagebox.showerror("Error", f"Error saving user: {str(e)}")
     
     def limpiar_formulario(self):
-        """Clear all form fields."""
+        """Clear all form fields and reset to REGISTER mode."""
         self.id_usuario_var.set("")
         self.nombre_var.set("")
         self.email_var.set("")
         self.telefono_var.set("")
         self.direccion_var.set("")
         self.max_prestamos_var.set("3")
+        
+        # Reset to REGISTER mode
+        self.modo_edicion = False
+        self.id_original = None
+        self.id_entry.config(state="normal")
+        self.generate_id_button.config(state="normal")
+        self.mode_label.config(text="REGISTER NEW USER", fg="#006400")
+        self.save_button.config(text="💾 Register User")
     
     def editar_usuario_seleccionado(self):
         """Load selected user into form for editing."""
@@ -459,24 +504,37 @@ class UsuariosWindow:
         values = item['values']
         
         # Get full user data
-        usuario = self.gestor_usuarios.obtener_usuario(values[0])
+        id_usuario = values[0]
+        usuario = self.gestor_usuarios.obtener_usuario(id_usuario)
         
         if not usuario:
             messagebox.showerror("Error", "User not found")
             return
         
+        # Switch to EDIT mode
+        self.modo_edicion = True
+        self.id_original = id_usuario
+        
         # Load into form
         self.id_usuario_var.set(usuario.id_usuario)
         self.nombre_var.set(usuario.nombre)
         self.email_var.set(usuario.email)
-        self.telefono_var.set(usuario.telefono)
-        self.direccion_var.set(usuario.direccion)
+        self.telefono_var.set(usuario.telefono if usuario.telefono else "")
+        self.direccion_var.set(usuario.direccion if usuario.direccion else "")
         self.max_prestamos_var.set(str(usuario.max_prestamos))
+        
+        # Make ID read-only and disable generate button in edit mode
+        self.id_entry.config(state="readonly")
+        self.generate_id_button.config(state="disabled")
+        
+        # Update UI to show edit mode
+        self.mode_label.config(text="EDIT USER", fg="#FF8C00")
+        self.save_button.config(text="💾 Update User")
         
         # Switch to form tab
         self.notebook.select(self.tab_formulario)
         
-        messagebox.showinfo("Edit Mode", "User loaded. Modify fields and click Register to update.")
+        messagebox.showinfo("Edit Mode", "User loaded for editing. Modify fields and click 'Update User'.")
     
     def activar_usuario_seleccionado(self):
         """Activate selected user."""

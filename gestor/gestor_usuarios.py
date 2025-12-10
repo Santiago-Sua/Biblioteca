@@ -428,7 +428,42 @@ class GestorUsuarios:
         except Exception as e:
             print(f"Error saving users: {e}")
             return False
+    def actualizar_usuario(self, id_original, id_usuario, nombre, email, telefono=None, direccion=None, max_prestamos=3):
+   
+    # Obtener usuario existente
+      usuario = self.obtener_usuario(id_original)
     
+      if not usuario:
+          return {'exito': False, 'mensaje': 'User not found'}
+    
+    # Eliminar el usuario anterior
+      resultado_eliminar = self.eliminar_usuario(id_original)
+    
+      if resultado_eliminar['exito']:
+        # Registrar el usuario actualizado manteniendo los préstamos
+          resultado = self.registrar_usuario(
+             id_usuario=id_usuario,
+             nombre=nombre,
+             email=email,
+             telefono=telefono,
+             direccion=direccion,
+             max_prestamos=max_prestamos
+         )
+        
+       
+          if resultado['exito']:
+            # Restaurar número de préstamos activos
+              usuario_actualizado = self.obtener_usuario(id_usuario)
+              usuario_actualizado.libros_prestados = usuario.libros_prestados
+              usuario_actualizado.activo = usuario.activo
+            
+              return {'exito': True, 'mensaje': f'User {nombre} updated successfully'}
+          else:
+              return resultado
+       
+    
+      return {'exito': False, 'mensaje': 'Could not update user'}
+
     def generar_id_unico(self):
         """
         Generate a unique user ID.

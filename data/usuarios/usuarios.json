@@ -1,1 +1,13 @@
-[]
+[
+  {
+    "id_usuario": "JDV",
+    "nombre": "juan david nune",
+    "email": "juan@gmail.com",
+    "telefono": "3122166866",
+    "direccion": "locasecas",
+    "fecha_registro": "2025-12-10",
+    "activo": true,
+    "libros_prestados": 0,
+    "max_prestamos": 3
+  }
+]
