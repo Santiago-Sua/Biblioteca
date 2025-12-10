@@ -1,27 +1,5 @@
 [
   {
-    "isbn": "978-0-307-47495-7",
-    "titulo": "Cien Años de Soledad",
-    "autor": "Gabriel García Márquez",
-    "peso": 1.5,
-    "valor": 50000.0,
-    "stock": 5,
-    "genero": "Ficción",
-    "editorial": "Editorial Sudamericana",
-    "anio_publicacion": 1967
-  },
-  {
-    "isbn": "978-84-376-0494-7",
-    "titulo": "Don Quijote de la Mancha",
-    "autor": "Miguel de Cervantes",
-    "peso": 2.5,
-    "valor": 75000.0,
-    "stock": 3,
-    "genero": "Clásico",
-    "editorial": "Real Academia Española",
-    "anio_publicacion": 1605
-  },
-  {
     "isbn": "978-0-14-017739-8",
     "titulo": "Crimen y Castigo",
     "autor": "Fiódor Dostoyevski",
@@ -339,5 +317,27 @@
     "genero": "General",
     "editorial": "Unknown",
     "anio_publicacion": 2024
+  },
+  {
+    "isbn": "978-0-307-47495-7",
+    "titulo": "Cien Años de Soledad",
+    "autor": "Gabriel García Márquez",
+    "peso": 1.55,
+    "valor": 50000.0,
+    "stock": 5,
+    "genero": "Ficción",
+    "editorial": "Editorial Sudamericana",
+    "anio_publicacion": 1967
+  },
+  {
+    "isbn": "978-84-376-0494-7",
+    "titulo": "Don Quijote de la Mancha",
+    "autor": "Miguel de Cervantes",
+    "peso": 2.55,
+    "valor": 75000.0,
+    "stock": 3,
+    "genero": "Clásico",
+    "editorial": "Real Academia Española",
+    "anio_publicacion": 1605
   }
 ]

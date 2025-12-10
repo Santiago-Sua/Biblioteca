@@ -385,7 +385,15 @@ class GestorInventario:
         except Exception as e:
             print(f"Error saving inventory: {e}")
             return False
-    
+        
+    def actualizar_libro(self, isbn_original, libro_actualizado):
+  
+    # Eliminar el libro anterior
+        if self.eliminar_libro(isbn_original):
+        # Agregar el libro actualizado
+           return self.agregar_libro(libro_actualizado)
+        return False
+
     def verificar_consistencia(self):
         """
         Verify that both inventories are consistent.

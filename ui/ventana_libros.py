@@ -39,6 +39,8 @@ class LibrosWindow:
         parent: Parent container widget
         archivo_handler: File operations handler
         gestor_inventario: Inventory manager instance
+        modo_edicion: Flag to track if we're editing an existing book
+        isbn_original: Original ISBN when editing (to identify the book)
     """
     
     def __init__(self, parent, archivo_handler):
@@ -54,6 +56,10 @@ class LibrosWindow:
         
         # Initialize inventory manager
         self.gestor_inventario = GestorInventario(archivo_handler)
+        
+        # Edit mode tracking
+        self.modo_edicion = False
+        self.isbn_original = None
         
         # Create main container
         self.main_frame = tk.Frame(parent, bg="white")
@@ -220,97 +226,107 @@ class LibrosWindow:
         form_frame = tk.Frame(self.tab_formulario, bg="white")
         form_frame.pack(pady=20, padx=50, fill="both", expand=True)
         
+        # Mode indicator label
+        self.mode_label = tk.Label(
+            form_frame,
+            text="ADD NEW BOOK",
+            bg="white",
+            font=("Helvetica", 12, "bold"),
+            fg="#006400"
+        )
+        self.mode_label.grid(row=0, column=0, columnspan=2, pady=(0, 15))
+        
         # ISBN
         tk.Label(form_frame, text="ISBN *:", bg="white", font=("Helvetica", 10, "bold")).grid(
-            row=0, column=0, sticky="w", pady=5
+            row=1, column=0, sticky="w", pady=5
         )
         self.isbn_var = tk.StringVar()
-        tk.Entry(form_frame, textvariable=self.isbn_var, font=("Helvetica", 10), width=30).grid(
-            row=0, column=1, pady=5, padx=10, sticky="w"
-        )
+        self.isbn_entry = tk.Entry(form_frame, textvariable=self.isbn_var, font=("Helvetica", 10), width=30)
+        self.isbn_entry.grid(row=1, column=1, pady=5, padx=10, sticky="w")
         
         # Title
         tk.Label(form_frame, text="Title *:", bg="white", font=("Helvetica", 10, "bold")).grid(
-            row=1, column=0, sticky="w", pady=5
+            row=2, column=0, sticky="w", pady=5
         )
         self.titulo_var = tk.StringVar()
         tk.Entry(form_frame, textvariable=self.titulo_var, font=("Helvetica", 10), width=30).grid(
-            row=1, column=1, pady=5, padx=10, sticky="w"
+            row=2, column=1, pady=5, padx=10, sticky="w"
         )
         
         # Author
         tk.Label(form_frame, text="Author *:", bg="white", font=("Helvetica", 10, "bold")).grid(
-            row=2, column=0, sticky="w", pady=5
+            row=3, column=0, sticky="w", pady=5
         )
         self.autor_var = tk.StringVar()
         tk.Entry(form_frame, textvariable=self.autor_var, font=("Helvetica", 10), width=30).grid(
-            row=2, column=1, pady=5, padx=10, sticky="w"
+            row=3, column=1, pady=5, padx=10, sticky="w"
         )
         
         # Weight
         tk.Label(form_frame, text="Weight (kg) *:", bg="white", font=("Helvetica", 10, "bold")).grid(
-            row=3, column=0, sticky="w", pady=5
+            row=4, column=0, sticky="w", pady=5
         )
         self.peso_var = tk.StringVar()
         tk.Entry(form_frame, textvariable=self.peso_var, font=("Helvetica", 10), width=30).grid(
-            row=3, column=1, pady=5, padx=10, sticky="w"
+            row=4, column=1, pady=5, padx=10, sticky="w"
         )
         
         # Value
         tk.Label(form_frame, text="Value (COP) *:", bg="white", font=("Helvetica", 10, "bold")).grid(
-            row=4, column=0, sticky="w", pady=5
+            row=5, column=0, sticky="w", pady=5
         )
         self.valor_var = tk.StringVar()
         tk.Entry(form_frame, textvariable=self.valor_var, font=("Helvetica", 10), width=30).grid(
-            row=4, column=1, pady=5, padx=10, sticky="w"
+            row=5, column=1, pady=5, padx=10, sticky="w"
         )
         
         # Stock
         tk.Label(form_frame, text="Stock:", bg="white", font=("Helvetica", 10, "bold")).grid(
-            row=5, column=0, sticky="w", pady=5
+            row=6, column=0, sticky="w", pady=5
         )
         self.stock_var = tk.StringVar(value="1")
         tk.Entry(form_frame, textvariable=self.stock_var, font=("Helvetica", 10), width=30).grid(
-            row=5, column=1, pady=5, padx=10, sticky="w"
+            row=6, column=1, pady=5, padx=10, sticky="w"
         )
         
         # Genre
         tk.Label(form_frame, text="Genre:", bg="white", font=("Helvetica", 10, "bold")).grid(
-            row=6, column=0, sticky="w", pady=5
+            row=7, column=0, sticky="w", pady=5
         )
         self.genero_var = tk.StringVar(value="General")
         tk.Entry(form_frame, textvariable=self.genero_var, font=("Helvetica", 10), width=30).grid(
-            row=6, column=1, pady=5, padx=10, sticky="w"
+            row=7, column=1, pady=5, padx=10, sticky="w"
         )
         
         # Editorial
         tk.Label(form_frame, text="Publisher:", bg="white", font=("Helvetica", 10, "bold")).grid(
-            row=7, column=0, sticky="w", pady=5
+            row=8, column=0, sticky="w", pady=5
         )
         self.editorial_var = tk.StringVar(value="Unknown")
         tk.Entry(form_frame, textvariable=self.editorial_var, font=("Helvetica", 10), width=30).grid(
-            row=7, column=1, pady=5, padx=10, sticky="w"
+            row=8, column=1, pady=5, padx=10, sticky="w"
         )
         
         # Year
         tk.Label(form_frame, text="Year:", bg="white", font=("Helvetica", 10, "bold")).grid(
-            row=8, column=0, sticky="w", pady=5
+            row=9, column=0, sticky="w", pady=5
         )
         self.anio_var = tk.StringVar(value="2024")
         tk.Entry(form_frame, textvariable=self.anio_var, font=("Helvetica", 10), width=30).grid(
-            row=8, column=1, pady=5, padx=10, sticky="w"
+            row=9, column=1, pady=5, padx=10, sticky="w"
         )
         
         # Buttons
         btn_frame = tk.Frame(form_frame, bg="white")
-        btn_frame.grid(row=9, column=0, columnspan=2, pady=20)
+        btn_frame.grid(row=10, column=0, columnspan=2, pady=20)
         
-        tb.Button(
+        self.save_button = tb.Button(
             btn_frame,
             text="💾 Save Book",
             bootstyle="success",
             command=self.guardar_libro
-        ).pack(side="left", padx=10)
+        )
+        self.save_button.pack(side="left", padx=10)
         
         tb.Button(
             btn_frame,
@@ -326,7 +342,7 @@ class LibrosWindow:
             bg="white",
             font=("Helvetica", 9, "italic"),
             fg="gray"
-        ).grid(row=10, column=0, columnspan=2, pady=5)
+        ).grid(row=11, column=0, columnspan=2, pady=5)
     
     def crear_tab_busqueda(self):
         """Create the search tab."""
@@ -537,19 +553,28 @@ class LibrosWindow:
                 anio_publicacion=int(anio_str) if anio_str else 2024
             )
             
-            # Add to inventory
-            if self.gestor_inventario.agregar_libro(libro):
-                messagebox.showinfo("Success", f"Book '{titulo}' added successfully!")
-                self.limpiar_formulario()
-                self.cargar_libros()
+            if self.modo_edicion:
+                # UPDATE mode
+                if self.gestor_inventario.actualizar_libro(self.isbn_original, libro):
+                    messagebox.showinfo("Success", f"Book '{titulo}' updated successfully!")
+                    self.limpiar_formulario()
+                    self.cargar_libros()
+                else:
+                    messagebox.showerror("Error", "Could not update book.")
             else:
-                messagebox.showerror("Error", "Could not add book. ISBN might already exist.")
+                # ADD mode
+                if self.gestor_inventario.agregar_libro(libro):
+                    messagebox.showinfo("Success", f"Book '{titulo}' added successfully!")
+                    self.limpiar_formulario()
+                    self.cargar_libros()
+                else:
+                    messagebox.showerror("Error", "Could not add book. ISBN might already exist.")
                 
         except Exception as e:
             messagebox.showerror("Error", f"Error saving book: {str(e)}")
     
     def limpiar_formulario(self):
-        """Clear all form fields."""
+        """Clear all form fields and reset to ADD mode."""
         self.isbn_var.set("")
         self.titulo_var.set("")
         self.autor_var.set("")
@@ -559,6 +584,13 @@ class LibrosWindow:
         self.genero_var.set("General")
         self.editorial_var.set("Unknown")
         self.anio_var.set("2024")
+        
+        # Reset to ADD mode
+        self.modo_edicion = False
+        self.isbn_original = None
+        self.isbn_entry.config(state="normal")
+        self.mode_label.config(text="ADD NEW BOOK", fg="#006400")
+        self.save_button.config(text="💾 Save Book")
     
     def editar_libro_seleccionado(self):
         """Load selected book into form for editing."""
@@ -570,19 +602,40 @@ class LibrosWindow:
         item = self.tree.item(selection[0])
         values = item['values']
         
+        # Get complete book data
+        isbn = values[0]
+        libro = self.gestor_inventario.buscar_por_isbn(isbn)
+        
+        if not libro:
+            messagebox.showerror("Error", "Could not load book data")
+            return
+        
+        # Switch to EDIT mode
+        self.modo_edicion = True
+        self.isbn_original = isbn
+        
         # Load into form
-        self.isbn_var.set(values[0])
-        self.titulo_var.set(values[1])
-        self.autor_var.set(values[2])
-        self.peso_var.set(values[3])
-        self.valor_var.set(values[4].replace('$', '').replace(',', ''))
-        self.stock_var.set(values[5])
-        self.genero_var.set(values[6])
+        self.isbn_var.set(libro.isbn)
+        self.titulo_var.set(libro.titulo)
+        self.autor_var.set(libro.autor)
+        self.peso_var.set(str(libro.peso))
+        self.valor_var.set(str(libro.valor))
+        self.stock_var.set(str(libro.stock))
+        self.genero_var.set(libro.genero)
+        self.editorial_var.set(libro.editorial)
+        self.anio_var.set(str(libro.anio_publicacion))
+        
+        # Make ISBN read-only in edit mode
+        self.isbn_entry.config(state="readonly")
+        
+        # Update UI to show edit mode
+        self.mode_label.config(text="EDIT BOOK", fg="#FF8C00")
+        self.save_button.config(text="💾 Update Book")
         
         # Switch to form tab
         self.notebook.select(self.tab_formulario)
         
-        messagebox.showinfo("Edit Mode", "Book loaded. Modify and save to update.")
+        messagebox.showinfo("Edit Mode", "Book loaded for editing. Modify fields and click 'Update Book'.")
     
     def eliminar_libro_seleccionado(self):
         """Delete selected book."""
@@ -680,19 +733,4 @@ class LibrosWindow:
         )
 
         if not ruta:
-            return  # user cancelled
-
-        try:
-            # cargar_desde_csv returns number of books loaded
-            count = self.gestor_inventario.cargar_desde_csv(ruta)
-
-            messagebox.showinfo(
-                "CSV Loaded",
-                f"{count} books loaded successfully from:\n{ruta}"
-            )
-
-            # refresh list
-            self.cargar_libros()
-
-        except Exception as e:
-            messagebox.showerror("Error", f"Could not load CSV:\n{e}")
+            return  #
