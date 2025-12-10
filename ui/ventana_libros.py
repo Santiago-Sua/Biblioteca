@@ -13,6 +13,7 @@ Date: December 2025
 """
 
 import tkinter as tk
+from tkinter import filedialog
 from tkinter import messagebox, ttk
 import ttkbootstrap as tb
 from ttkbootstrap.constants import *
@@ -110,6 +111,15 @@ class LibrosWindow:
             bootstyle="info",
             command=self.cargar_libros
         ).pack(side="left", padx=5)
+
+        # Load CSV button
+        tb.Button(
+            btn_frame,
+            text="📁 Load CSV",
+            bootstyle="secondary",
+            command=self.cargar_csv_externo
+        ).pack(side="left", padx=5)
+
         
         tb.Button(
             btn_frame,
@@ -661,3 +671,28 @@ class LibrosWindow:
         self.report_text.insert(tk.END, "\n" + "=" * 90 + "\n")
         
         messagebox.showinfo("Success", f"Report generated with {len(reporte)} books")
+
+    def cargar_csv_externo(self):
+        """Open a dialog to load an external CSV and refresh inventory."""
+        ruta = filedialog.askopenfilename(
+            title="Select CSV File",
+            filetypes=[("CSV Files", "*.csv"), ("All Files", "*.*")]
+        )
+
+        if not ruta:
+            return  # user cancelled
+
+        try:
+            # cargar_desde_csv returns number of books loaded
+            count = self.gestor_inventario.cargar_desde_csv(ruta)
+
+            messagebox.showinfo(
+                "CSV Loaded",
+                f"{count} books loaded successfully from:\n{ruta}"
+            )
+
+            # refresh list
+            self.cargar_libros()
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Could not load CSV:\n{e}")
