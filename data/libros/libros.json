@@ -1,16 +1,5 @@
 [
   {
-    "isbn": "978-0-14-017739-8",
-    "titulo": "Crimen y Castigo",
-    "autor": "Fiódor Dostoyevski",
-    "peso": 2.2,
-    "valor": 45000.0,
-    "stock": 4,
-    "genero": "Ficción",
-    "editorial": "Penguin Classics",
-    "anio_publicacion": 1866
-  },
-  {
     "isbn": "978-0-06-112008-4",
     "titulo": "Matar un Ruiseñor",
     "autor": "Harper Lee",
@@ -339,5 +328,16 @@
     "genero": "Clásico",
     "editorial": "Real Academia Española",
     "anio_publicacion": 1605
+  },
+  {
+    "isbn": "978-0-14-017739-8",
+    "titulo": "Crimen y Castigo",
+    "autor": "Fiódor Dostoyevski",
+    "peso": 2.2,
+    "valor": 45000.0,
+    "stock": 5,
+    "genero": "Ficción",
+    "editorial": "Penguin Classics",
+    "anio_publicacion": 1866
   }
 ]
